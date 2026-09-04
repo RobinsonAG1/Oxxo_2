@@ -1,12 +1,12 @@
 from app import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class Pedido(db.Model):
     __tablename__ = 'pedidos'
     idPedido = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.idUser'), nullable=False)
-    fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    fecha = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     total = db.Column(db.Numeric(10, 2), nullable=False, default=0)
     estado = db.Column(db.String(30), nullable=False, default='pendiente')
 
@@ -26,7 +26,7 @@ class DetallePedido(db.Model):
     precio = db.Column(db.Numeric(10, 2), nullable=False, default=0)
 
     pedido = db.relationship('Pedido', back_populates='detalles')
-    producto = db.relationship('Producto')
+    producto = db.relationship('Producto', backref=db.backref('detalles', lazy='dynamic'))
 
     def subtotal(self):
         return float(self.precio) * self.cantidad

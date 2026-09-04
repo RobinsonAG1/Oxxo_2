@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Editar Usuario: {{ usuario.nameUser }}{% endblock %}
+{% block content %}
+<form action="{{ url_for('usuario.edit', id=usuario.idUser) }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-group mb-3">
+        <label for="nameUser" class="form-label">Nombre de usuario:</label>
+        <input type="text" id="nameUser" name="nameUser" maxlength="80" required
+               value="{{ valores.get('nameUser', '') }}" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="email" class="form-label">Correo electrónico:</label>
+        <input type="email" id="email" name="email" maxlength="120" required
+               value="{{ valores.get('email', '') }}" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="rol" class="form-label">Rol:</label>
+        <select id="rol" name="rol" required class="form-select">
+            {% for rol in roles %}
+                <option value="{{ rol }}" {% if rol == valores.get('rol') %}selected{% endif %}>{{ rol }}</option>
+            {% endfor %}
+        </select>
+        {% if usuario.idUser == current_user.idUser %}
+            <div class="form-text text-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                Estás editando tu propia cuenta: si cambias tu rol perderás el acceso al panel.
+            </div>
+        {% endif %}
+    </div>
+
+    <hr>
+    <p class="text-muted small">Deja los campos de contraseña vacíos para conservar la actual.</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="passwordUser" class="form-label">Nueva contraseña:</label>
+                <input type="password" id="passwordUser" name="passwordUser" minlength="6" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label for="passwordConfirm" class="form-label">Repetir nueva contraseña:</label>
+                <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="6" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg"></i> Actualizar Usuario
+    </button>
+    <a href="{{ url_for('usuario.index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+</form>
+{% endblock %}

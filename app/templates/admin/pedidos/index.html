@@ -1,6 +1,23 @@
 {% extends "base.html" %}
+{% from "admin/_paginacion.html" import paginacion_nav %}
 {% block titulo_pagina %}Administración de Pedidos{% endblock %}
 {% block content %}
+
+<form method="get" action="{{ url_for('pedido_admin.index') }}" class="row g-2 mb-3">
+    <div class="col-md-10">
+        <select name="estado" class="form-select">
+            <option value="">Todos los estados</option>
+            {% for estado in estados %}
+                <option value="{{ estado }}" {% if estado == estado_actual %}selected{% endif %}>{{ estado }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-outline-secondary">
+            <i class="bi bi-funnel"></i> Filtrar
+        </button>
+    </div>
+</form>
 
 <div class="table-responsive">
     <table class="table table-striped align-middle">
@@ -15,6 +32,7 @@
             </tr>
         </thead>
         <tbody>
+            {% set colores = {'pendiente': 'secondary', 'pagado': 'info', 'enviado': 'primary', 'entregado': 'success', 'cancelado': 'danger'} %}
             {% for pedido in pedidos %}
                 <tr>
                     <td>{{ pedido.idPedido }}</td>
@@ -22,11 +40,10 @@
                     <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
                     <td>${{ "%.2f"|format(pedido.total) }}</td>
                     <td>
-                        {% set estados = {'pendiente': 'secondary', 'pagado': 'info', 'enviado': 'primary', 'entregado': 'success', 'cancelado': 'danger'} %}
-                        <span class="badge bg-{{ estados.get(pedido.estado, 'secondary') }}">{{ pedido.estado }}</span>
+                        <span class="badge bg-{{ colores.get(pedido.estado, 'secondary') }}">{{ pedido.estado }}</span>
                     </td>
                     <td>
-                        <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-success btn-sm mb-1">
+                        <a href="{{ url_for('pedido_admin.detalle', id=pedido.idPedido) }}" class="btn btn-success btn-sm mb-1">
                             <i class="bi bi-eye"></i>
                         </a>
                         <div class="btn-group">
@@ -34,9 +51,10 @@
                                 Cambiar estado
                             </button>
                             <ul class="dropdown-menu">
-                                {% for estado in ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'] %}
+                                {% for estado in estados %}
                                 <li>
-                                    <form action="{{ url_for('pedido_admin.cambiar_estado', id=pedido.idPedido) }}" method="post" class="dropdown-item p-0">
+                                    <form action="{{ url_for('pedido_admin.cambiar_estado', id=pedido.idPedido) }}" method="post">
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" name="estado" value="{{ estado }}" class="dropdown-item">
                                             {% if estado == pedido.estado %}<i class="bi bi-check-circle"></i>{% endif %}
                                             {{ estado }}
@@ -54,9 +72,9 @@
 </div>
 
 {% if not pedidos %}
-<div class="alert alert-info">
-    No hay pedidos registrados aún.
-</div>
+<div class="alert alert-info">No hay pedidos que mostrar.</div>
 {% endif %}
+
+{{ paginacion_nav(paginacion, 'pedido_admin.index') }}
 
 {% endblock %}

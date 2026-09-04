@@ -28,16 +28,18 @@ def login():
 @login_required
 def dashboard():
     if current_user.rol == 'admin':
+        from app.models.admin.categoria import Categoria
         from app.models.admin.producto import Producto
         from app.models.cliente.pedido import Pedido
         from app.models.login.users import User
-        producto_count = Producto.query.count()
-        pedido_count = Pedido.query.count()
-        cliente_count = User.query.filter_by(rol='cliente').count()
-        return render_template('admin/dashboard.html',
-                               producto_count=producto_count,
-                               pedido_count=pedido_count,
-                               cliente_count=cliente_count)
+        return render_template(
+            'admin/dashboard.html',
+            producto_count=Producto.query.count(),
+            categoria_count=Categoria.query.count(),
+            pedido_count=Pedido.query.count(),
+            cliente_count=User.query.filter_by(rol='cliente').count(),
+            pedidos_pendientes=Pedido.query.filter_by(estado='pendiente').count(),
+        )
     return render_template('cliente/dashboard.html')
 
 

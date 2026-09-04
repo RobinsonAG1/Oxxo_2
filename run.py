@@ -25,13 +25,16 @@ def seed_data():
         {'nombre': 'Artículos de Limpieza', 'descripcion': 'Productos para el hogar'},
     ]
 
+    # El diccionario debe incluir tambien las categorias que ya existian: si solo
+    # se guardan las nuevas, al recrear un producto borrado se lanza un KeyError
+    # y la aplicacion no arranca.
     categorias_creadas = {}
     for cat in categorias:
-        if not Categoria.query.filter_by(nombre=cat['nombre']).first():
-            nueva = Categoria(nombre=cat['nombre'], descripcion=cat['descripcion'])
-            db.session.add(nueva)
-            db.session.flush()
-            categorias_creadas[cat['nombre']] = nueva
+        existente = Categoria.query.filter_by(nombre=cat['nombre']).first()
+        if not existente:
+            existente = Categoria(nombre=cat['nombre'], descripcion=cat['descripcion'])
+            db.session.add(existente)
+        categorias_creadas[cat['nombre']] = existente
 
     db.session.flush()
 

@@ -25,6 +25,7 @@
                     <td>${{ "%.2f"|format(item.producto.precio) }}</td>
                     <td>
                         <form action="{{ url_for('carrito.actualizar', item_id=item.idItem) }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                             <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" class="form-control form-control-sm" style="width: 80px;">
                             <button type="submit" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-arrow-repeat"></i>
@@ -34,6 +35,7 @@
                     <td>${{ "%.2f"|format(item.subtotal()) }}</td>
                     <td>
                         <form action="{{ url_for('carrito.eliminar', item_id=item.idItem) }}" method="post">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -54,6 +56,7 @@
             <i class="bi bi-arrow-left"></i> Seguir comprando
         </a>
         <form action="{{ url_for('pedido.checkout') }}" method="post">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-check-lg"></i> Realizar pedido
             </button>

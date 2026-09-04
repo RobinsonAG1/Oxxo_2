@@ -37,6 +37,16 @@
                           <i class="bi bi-receipt"></i> Pedidos
                       </a>
                   </li>
+                  <!-- Usuarios -->
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarUsuarios" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Usuarios
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarUsuarios">
+                          <li><a class="dropdown-item" href="{{ url_for('usuario.index') }}">Listado</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('usuario.add') }}">Agregar</a></li>
+                      </ul>
+                  </li>
                   {% else %}
                   <!-- Tienda -->
                   <li class="nav-item">
