@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Productos Más Vendidos{% endblock %}
+{% block content %}
+
+<h1><i class="bi bi-box-seam"></i> Productos Más Vendidos</h1>
+
+<div class="card">
+    <div class="card-body">
+        {% if productos_vendidos %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Total Vendido</th>
+                        <th>Ingresos Totales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prod in productos_vendidos %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ prod.nombre }}</td>
+                        <td>${{ "%.2f"|format(prod.precio) }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ prod.total_vendido }}</span> unidades
+                        </td>
+                        <td>
+                            <strong>${{ "%.2f"|format(prod.total_ingresos) }}</strong>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No hay datos de ventas registrados.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('reportes.index') }}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Volver a Reportes
+</a>
+
+{% endblock %}

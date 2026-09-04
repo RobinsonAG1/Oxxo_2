@@ -59,4 +59,23 @@ def detalle(id):
     if pedido.user_id != current_user.idUser and current_user.rol != 'admin':
         flash('No tienes permiso para ver este pedido.', 'danger')
         return redirect(url_for('auth.dashboard'))
-    return render_template('detalle_pedido.html', pedido=pedido)
+    return render_template('pedido/detalle.html', pedido=pedido)
+
+
+@bp.route('/')
+@login_required
+@admin_required
+def index():
+    pedidos = Pedido.query.order_by(Pedido.fecha.desc()).all()
+    return render_template('pedido/index.html', pedidos=pedidos)
+
+
+@bp.route('/cambiar-estado/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def cambiar_estado(id):
+    pedido = Pedido.query.get_or_404(id)
+    pedido.estado = request.form.get('estado', 'pendiente')
+    db.session.commit()
+    flash('Estado del pedido actualizado.', 'success')
+    return redirect(url_for('pedido.index'))

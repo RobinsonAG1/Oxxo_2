@@ -7,20 +7,42 @@
     <p class="text-muted">Panel de administración de la tienda OXXO.</p>
 </div>
 
+<!-- Alertas -->
+{% if productos_agotados > 0 %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle"></i> <strong>¡Atención!</strong> Hay {{ productos_agotados }} productos agotados.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% if pedidos_pendientes > 0 %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="bi bi-clock"></i> <strong>Pedidos pendientes:</strong> Hay {{ pedidos_pendientes }} pedidos esperando atención.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% if productos_stock_bajo|length > 0 %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-box-arrow-down"></i> <strong>Stock bajo:</strong> Hay {{ productos_stock_bajo|length }} productos con stock bajo (≤10).
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <div class="row mt-4 g-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-primary">
             <div class="card-body">
                 <i class="bi bi-box-seam display-4 text-primary"></i>
                 <h3 class="mt-2">{{ producto_count }}</h3>
-                <p class="text-muted mb-0">Productos registrados</p>
+                <p class="text-muted mb-0">Productos</p>
             </div>
             <div class="card-footer">
                 <a href="{{ url_for('producto.index') }}" class="btn btn-sm btn-primary">Ver productos</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
                 <i class="bi bi-receipt display-4 text-success"></i>
@@ -32,18 +54,45 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-info">
             <div class="card-body">
                 <i class="bi bi-people display-4 text-info"></i>
                 <h3 class="mt-2">{{ cliente_count }}</h3>
-                <p class="text-muted mb-0">Clientes registrados</p>
+                <p class="text-muted mb-0">Clientes</p>
             </div>
             <div class="card-footer">
-                <a href="{{ url_for('categoria.index') }}" class="btn btn-sm btn-info">Ver categorías</a>
+                <a href="{{ url_for('usuario_admin.index') }}" class="btn btn-sm btn-info">Ver clientes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-warning">
+            <div class="card-body">
+                <i class="bi bi-currency-dollar display-4 text-warning"></i>
+                <h3 class="mt-2">${{ "%.2f"|format(ventas_mes) }}</h3>
+                <p class="text-muted mb-0">Ventas mes</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('reportes.ventas') }}" class="btn btn-sm btn-warning">Ver reportes</a>
             </div>
         </div>
     </div>
 </div>
+
+{% else %}
+<div class="text-center">
+    <h1><i class="bi bi-person"></i> ¡Bienvenido, {{ current_user.nameUser }}!</h1>
+    <p class="text-muted">Explora la tienda y haz tus pedidos.</p>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <a href="{{ url_for('producto.tienda') }}" class="btn btn-danger btn-lg">
+            <i class="bi bi-shop"></i> Ir a la tienda
+        </a>
+        <a href="{{ url_for('pedido.mis_pedidos') }}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-box-seam"></i> Mis pedidos
+        </a>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
