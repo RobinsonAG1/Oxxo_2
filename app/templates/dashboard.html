@@ -8,20 +8,42 @@
     <p class="text-muted">Panel de administración de la tienda OXXO.</p>
 </div>
 
+<!-- Alertas -->
+{% if productos_agotados > 0 %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle"></i> <strong>¡Atención!</strong> Hay {{ productos_agotados }} productos agotados.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% if pedidos_pendientes > 0 %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="bi bi-clock"></i> <strong>Pedidos pendientes:</strong> Hay {{ pedidos_pendientes }} pedidos esperando atención.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+{% if productos_stock_bajo|length > 0 %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-box-arrow-down"></i> <strong>Stock bajo:</strong> Hay {{ productos_stock_bajo|length }} productos con stock bajo (≤10).
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <div class="row mt-4 g-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-primary">
             <div class="card-body">
                 <i class="bi bi-box-seam display-4 text-primary"></i>
                 <h3 class="mt-2">{{ producto_count }}</h3>
-                <p class="text-muted mb-0">Productos registrados</p>
+                <p class="text-muted mb-0">Productos</p>
             </div>
             <div class="card-footer">
                 <a href="{{ url_for('producto.index') }}" class="btn btn-sm btn-primary">Ver productos</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
                 <i class="bi bi-receipt display-4 text-success"></i>
@@ -33,19 +55,87 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-center border-info">
             <div class="card-body">
                 <i class="bi bi-people display-4 text-info"></i>
                 <h3 class="mt-2">{{ cliente_count }}</h3>
-                <p class="text-muted mb-0">Clientes registrados</p>
+                <p class="text-muted mb-0">Clientes</p>
             </div>
             <div class="card-footer">
-                <a href="{{ url_for('categoria.index') }}" class="btn btn-sm btn-info">Ver categorías</a>
+                <a href="{{ url_for('usuario_admin.index') }}" class="btn btn-sm btn-info">Ver clientes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-warning">
+            <div class="card-body">
+                <i class="bi bi-currency-dollar display-4 text-warning"></i>
+                <h3 class="mt-2">${{ "%.2f"|format(ventas_mes) }}</h3>
+                <p class="text-muted mb-0">Ventas mes</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('reportes.ventas') }}" class="btn btn-sm btn-warning">Ver reportes</a>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Alertas de stock bajo -->
+{% if productos_stock_bajo %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5><i class="bi bi-exclamation-triangle"></i> Productos con Stock Bajo</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos_stock_bajo[:5] %}
+                            <tr>
+                                <td>{{ producto.nombre }}</td>
+                                <td>
+                                    <span class="badge {% if producto.stock == 0 %}bg-danger{% elif producto.stock <= 5 %}bg-warning{% else %}bg-info{% endif %}">
+                                        {{ producto.stock }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if producto.stock == 0 %}
+                                        <span class="text-danger">Agotado</span>
+                                    {% elif producto.stock <= 5 %}
+                                        <span class="text-warning">Crítico</span>
+                                    {% else %}
+                                        <span class="text-info">Bajo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if productos_stock_bajo|length > 5 %}
+                <a href="{{ url_for('reportes.stock_bajo') }}" class="btn btn-sm btn-warning">Ver todos</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% else %}
 <div class="text-center">

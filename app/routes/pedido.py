@@ -67,8 +67,37 @@ def detalle(id):
 @login_required
 @admin_required
 def index():
-    pedidos = Pedido.query.order_by(Pedido.fecha.desc()).all()
-    return render_template('pedido/index.html', pedidos=pedidos)
+    estado_filtro = request.args.get('estado', '')
+    fecha_inicio = request.args.get('fecha_inicio', '')
+    fecha_fin = request.args.get('fecha_fin', '')
+    cliente_id = request.args.get('cliente_id', '', type=int)
+    
+    query = Pedido.query
+    
+    if estado_filtro:
+        query = query.filter_by(estado=estado_filtro)
+    
+    if fecha_inicio:
+        from datetime import datetime
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        query = query.filter(Pedido.fecha >= fecha_inicio_dt)
+    
+    if fecha_fin:
+        from datetime import datetime
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        query = query.filter(Pedido.fecha <= fecha_fin_dt)
+    
+    if cliente_id:
+        query = query.filter_by(user_id=cliente_id)
+    
+    pedidos = query.order_by(Pedido.fecha.desc()).all()
+    
+    from app.models.users import User
+    clientes = User.query.filter_by(rol='cliente').all()
+    
+    return render_template('pedido/index.html', pedidos=pedidos, clientes=clientes,
+                          estado_filtro=estado_filtro, fecha_inicio=fecha_inicio,
+                          fecha_fin=fecha_fin, cliente_id=cliente_id)
 
 
 @bp.route('/cambiar-estado/<int:id>', methods=['POST'])

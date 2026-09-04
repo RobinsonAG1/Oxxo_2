@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Stock Bajo{% endblock %}
+{% block content %}
+
+<h1><i class="bi bi-exclamation-triangle"></i> Alertas de Stock Bajo</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="umbral" class="form-label">Umbral de Stock</label>
+                <input type="number" class="form-control" id="umbral" name="umbral" value="{{ umbral }}" min="1">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-warning w-100">
+                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if productos_bajo_stock %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i> Se encontraron {{ productos_bajo_stock|length }} productos con stock bajo (≤ {{ umbral }})
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock Actual</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos_bajo_stock %}
+                    <tr>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.categoria.nombre if producto.categoria else 'N/A' }}</td>
+                        <td>
+                            <span class="badge {% if producto.stock == 0 %}bg-danger{% elif producto.stock <= 5 %}bg-warning{% else %}bg-info{% endif %}">
+                                {{ producto.stock }}
+                            </span>
+                        </td>
+                        <td>${{ "%.2f"|format(producto.precio) }}</td>
+                        <td>
+                            {% if producto.stock == 0 %}
+                                <span class="text-danger"><strong>Agotado</strong></span>
+                            {% elif producto.stock <= 5 %}
+                                <span class="text-warning"><strong>Crítico</strong></span>
+                            {% else %}
+                                <span class="text-info"><strong>Bajo</strong></span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i> Editar Stock
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle"></i> No hay productos con stock bajo (umbral: {{ umbral }})
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('reportes.index') }}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Volver a Reportes
+</a>
+
+{% endblock %}

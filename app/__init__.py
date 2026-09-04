@@ -25,15 +25,24 @@ def create_app():
     from .models.carrito import Carrito, CarritoItem
     from .models.pedido import Pedido, DetallePedido
 
-    # Register blueprints
-    from app.routes import (
-        auth, producto, categoria, carrito, pedido
-    )
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(producto.bp)
-    app.register_blueprint(categoria.bp)
-    app.register_blueprint(carrito.bp)
-    app.register_blueprint(pedido.bp)
+    # Register blueprints organizados por rol
+    from app.routes.auth import bp as auth_bp
+    from app.routes.producto import bp as producto_bp
+    from app.routes.categoria import bp as categoria_bp
+    from app.routes.pedido import bp as pedido_bp
+    from app.routes.usuarios import bp as usuarios_bp
+    from app.routes.carrito import bp as carrito_bp
+    from app.routes.reportes import bp as reportes_bp
+    from app.routes.configuracion import bp as configuracion_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(producto_bp)
+    app.register_blueprint(categoria_bp)
+    app.register_blueprint(pedido_bp)
+    app.register_blueprint(usuarios_bp)
+    app.register_blueprint(carrito_bp)
+    app.register_blueprint(reportes_bp)
+    app.register_blueprint(configuracion_bp)
 
     @app.after_request
     def add_no_cache_headers(response):

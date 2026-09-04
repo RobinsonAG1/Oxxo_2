@@ -31,13 +31,33 @@ def dashboard():
         from app.models.producto import Producto
         from app.models.pedido import Pedido
         from app.models.users import User
+        from datetime import datetime, timedelta
+        
         producto_count = Producto.query.count()
         pedido_count = Pedido.query.count()
         cliente_count = User.query.filter_by(rol='cliente').count()
+        
+        # Nuevas métricas
+        productos_stock_bajo = Producto.query.filter(Producto.stock <= 10).all()
+        productos_agotados = Producto.query.filter(Producto.stock == 0).count()
+        pedidos_pendientes = Pedido.query.filter_by(estado='pendiente').count()
+        
+        # Ventas del mes
+        inicio_mes = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        pedidos_mes = Pedido.query.filter(
+            Pedido.fecha >= inicio_mes,
+            Pedido.estado != 'cancelado'
+        ).all()
+        ventas_mes = sum(p.total for p in pedidos_mes)
+        
         return render_template('dashboard.html',
                                producto_count=producto_count,
                                pedido_count=pedido_count,
-                               cliente_count=cliente_count)
+                               cliente_count=cliente_count,
+                               productos_stock_bajo=productos_stock_bajo,
+                               productos_agotados=productos_agotados,
+                               pedidos_pendientes=pedidos_pendientes,
+                               ventas_mes=ventas_mes)
     return render_template('dashboard.html')
 
 
