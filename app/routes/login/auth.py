@@ -32,6 +32,10 @@ def dashboard():
         from app.models.admin.producto import Producto
         from app.models.cliente.pedido import Pedido
         from app.models.login.users import User
+        from app.routes.admin.reportes import ahora
+        inicio_mes = ahora().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        ventas_mes = sum(float(p.total) for p in Pedido.query.filter(
+            Pedido.fecha >= inicio_mes, Pedido.estado != 'cancelado').all())
         return render_template(
             'admin/dashboard.html',
             producto_count=Producto.query.count(),
@@ -39,6 +43,7 @@ def dashboard():
             pedido_count=Pedido.query.count(),
             cliente_count=User.query.filter_by(rol='cliente').count(),
             pedidos_pendientes=Pedido.query.filter_by(estado='pendiente').count(),
+            ventas_mes=ventas_mes,
         )
     return render_template('cliente/dashboard.html')
 

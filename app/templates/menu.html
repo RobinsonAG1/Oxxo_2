@@ -37,6 +37,18 @@
                           <i class="bi bi-receipt"></i> Pedidos
                       </a>
                   </li>
+                  <!-- Reportes -->
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarReportes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Reportes
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarReportes">
+                          <li><a class="dropdown-item" href="{{ url_for('reportes.resumen') }}">Resumen</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('reportes.ventas') }}">Ventas</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('reportes.productos_mas_vendidos') }}">Productos más vendidos</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('reportes.stock_bajo') }}">Stock bajo</a></li>
+                      </ul>
+                  </li>
                   <!-- Usuarios -->
                   <li class="nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="#" id="navbarUsuarios" role="button" data-bs-toggle="dropdown" aria-expanded="false">

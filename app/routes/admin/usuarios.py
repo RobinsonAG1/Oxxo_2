@@ -154,6 +154,19 @@ def edit(id):
                            roles=ROLES, valores=valores)
 
 
+@bp.route('/detail/<int:id>')
+@admin_required
+def detail(id):
+    """Ficha del usuario con su historial de compras."""
+    usuario = db.get_or_404(User, id)
+    pedidos = (Pedido.query.filter_by(user_id=usuario.idUser)
+               .order_by(Pedido.fecha.desc()).all())
+    # Los pedidos cancelados no cuentan para el gasto acumulado.
+    total_gastado = sum(float(p.total) for p in pedidos if p.estado != 'cancelado')
+    return render_template('admin/usuarios/detail.html', usuario=usuario,
+                           pedidos=pedidos, total_gastado=total_gastado)
+
+
 @bp.route('/delete/<int:id>', methods=['POST'])
 @admin_required
 def delete(id):

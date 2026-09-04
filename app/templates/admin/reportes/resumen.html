@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Resumen General{% endblock %}
+{% block content %}
+
+<h1><i class="bi bi-speedometer2"></i> Resumen General del Negocio</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3 mb-4">
+        <div class="card text-center border-success">
+            <div class="card-body">
+                <i class="bi bi-currency-dollar display-4 text-success"></i>
+                <h3 class="mt-2">${{ "%.2f"|format(ventas_mes) }}</h3>
+                <p class="text-muted mb-0">Ventas este mes</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center border-primary">
+            <div class="card-body">
+                <i class="bi bi-receipt display-4 text-primary"></i>
+                <h3 class="mt-2">{{ pedidos_count }}</h3>
+                <p class="text-muted mb-0">Pedidos este mes</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center border-warning">
+            <div class="card-body">
+                <i class="bi bi-exclamation-triangle display-4 text-warning"></i>
+                <h3 class="mt-2">{{ productos_stock_bajo }}</h3>
+                <p class="text-muted mb-0">Productos con stock bajo</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center border-info">
+            <div class="card-body">
+                <i class="bi bi-clock display-4 text-info"></i>
+                <h3 class="mt-2">{{ pedidos_pendientes }}</h3>
+                <p class="text-muted mb-0">Pedidos pendientes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-box-seam"></i> Inventario</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Total Productos:</span>
+                    <strong>{{ total_productos }}</strong>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Stock Bajo (≤10):</span>
+                    <strong class="text-warning">{{ productos_stock_bajo }}</strong>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('producto.index') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-box-seam"></i> Ver Inventario
+                </a>
+                <a href="{{ url_for('reportes.stock_bajo') }}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Ver Stock Bajo
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-people"></i> Clientes</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Total Clientes:</span>
+                    <strong>{{ total_clientes }}</strong>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('usuario.index') }}" class="btn btn-sm btn-info">
+                    <i class="bi bi-people"></i> Ver Clientes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-receipt"></i> Pedidos</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Pendientes:</span>
+                    <strong class="text-warning">{{ pedidos_pendientes }}</strong>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('pedido_admin.index') }}" class="btn btn-sm btn-success">
+                    <i class="bi bi-receipt"></i> Ver Pedidos
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-bar-chart"></i> Reportes</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Accede a reportes detallados de ventas y productos.</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('reportes.ventas') }}" class="btn btn-sm btn-success">
+                    <i class="bi bi-currency-dollar"></i> Ventas
+                </a>
+                <a href="{{ url_for('reportes.productos_mas_vendidos') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-box-seam"></i> Top Productos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('reportes.index') }}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Volver a Reportes
+</a>
+
+{% endblock %}
