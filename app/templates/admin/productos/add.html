@@ -1,58 +1,42 @@
 {% extends "base.html" %}
 {% block titulo_pagina %}Agregar Producto{% endblock %}
 {% block content %}
-<form action="{{ url_for('producto.add') }}" method="post" class="needs-validation" novalidate>
-    <div class="form-group mb-3">
-        <label for="nombre" class="form-label">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required class="form-control">
-        <div class="invalid-feedback">
-            Por favor, ingrese el nombre del producto.
-        </div>
+<form action="{{ url_for('producto.add') }}" method="post">
+    <div class="field">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" class="input" required>
     </div>
 
-    <div class="form-group mb-3">
-        <label for="descripcion" class="form-label">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" rows="3" class="form-control"></textarea>
+    <div class="field">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="3" class="textarea"></textarea>
     </div>
 
-    <div class="form-group mb-3">
-        <label for="categoria_id" class="form-label">Categoría:</label>
-        <select id="categoria_id" name="categoria_id" required class="form-control">
+    <div class="field">
+        <label for="categoria_id">Categoría:</label>
+        <select id="categoria_id" name="categoria_id" class="select" required>
             <option value="">-- Seleccione --</option>
             {% for categoria in categorias %}
                 <option value="{{ categoria.idCategoria }}">{{ categoria.nombre }}</option>
             {% endfor %}
         </select>
-        <div class="invalid-feedback">
-            Por favor, seleccione una categoría.
+    </div>
+
+    <div class="grid-2">
+        <div class="field">
+            <label for="precio">Precio (MXN):</label>
+            <input type="number" id="precio" name="precio" step="0.01" min="0" class="input" required>
+        </div>
+        <div class="field">
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" min="0" class="input" required>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group mb-3">
-                <label for="precio" class="form-label">Precio (MXN):</label>
-                <input type="number" id="precio" name="precio" step="0.01" min="0" required class="form-control">
-                <div class="invalid-feedback">
-                    Por favor, ingrese un precio válido.
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group mb-3">
-                <label for="stock" class="form-label">Stock:</label>
-                <input type="number" id="stock" name="stock" min="0" required class="form-control">
-                <div class="invalid-feedback">
-                    Por favor, ingrese una cantidad válida.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-lg"></i> Agregar Producto
+    <button type="submit" class="btn btn-black">
+        <i class="bi bi-check-lg" aria-hidden="true"></i> Agregar Producto
     </button>
-    <a href="{{ url_for('producto.index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+    <a href="{{ url_for('producto.index') }}" class="btn btn-outline">Cancelar</a>
 </form>
 
 {% endblock %}

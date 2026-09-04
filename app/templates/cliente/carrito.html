@@ -1,75 +1,60 @@
 {% extends "base.html" %}
-{% block titulo_pagina %}Mi Carrito{% endblock %}
-{% block content %}
 
-{% if carrito.items %}
-<div class="table-responsive">
-    <table class="table align-middle">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in carrito.items %}
-                <tr>
-                    <td>
-                        <strong>{{ item.producto.nombre }}</strong>
-                        <br>
-                        <small class="text-muted">{{ item.producto.categoria.nombre }}</small>
-                    </td>
-                    <td>${{ "%.2f"|format(item.producto.precio) }}</td>
-                    <td>
-                        <form action="{{ url_for('carrito.actualizar', item_id=item.idItem) }}" method="post" class="d-flex align-items-center gap-2">
-                            <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" class="form-control form-control-sm" style="width: 80px;">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-arrow-repeat"></i>
-                            </button>
-                        </form>
-                    </td>
-                    <td>${{ "%.2f"|format(item.subtotal()) }}</td>
-                    <td>
-                        <form action="{{ url_for('carrito.eliminar', item_id=item.idItem) }}" method="post">
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% block page %}
+<div class="drawer-backdrop"></div>
+<aside class="cart-drawer" aria-label="Carrito de compras">
+  <header class="cart-drawer-head">
+    <h2><i class="bi bi-cart3" aria-hidden="true"></i> Mi carrito</h2>
+    <button type="button" class="modal-close" data-drawer-close aria-label="Cerrar carrito">&times;</button>
+  </header>
 
-<div class="d-flex justify-content-between align-items-center mt-3">
-    <div>
-        <h4>Total: ${{ "%.2f"|format(carrito.total()) }}</h4>
-    </div>
-    <div class="d-flex gap-2">
-        <a href="{{ url_for('tienda.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Seguir comprando
-        </a>
-        <form action="{{ url_for('pedido.checkout') }}" method="post">
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-check-lg"></i> Realizar pedido
+  <div class="cart-drawer-body">
+    {% if carrito.items %}
+      {% for item in carrito.items %}
+        <article class="cart-item">
+          <div class="cart-thumb">{{ item.producto.nombre[:1]|upper }}</div>
+          <div class="cart-item-info">
+            <p class="cart-item-name">{{ item.producto.nombre }}</p>
+            <p class="cart-item-cat">{{ item.producto.categoria.nombre }}</p>
+            <p class="cart-item-price">${{ "%.2f"|format(item.producto.precio) }}</p>
+            <form action="{{ url_for('carrito.actualizar', item_id=item.idItem) }}" method="post" class="qty-form">
+              <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" class="qty-input" required>
+              <button type="submit" class="btn btn-outline-black btn-sm" aria-label="Actualizar cantidad">
+                <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+          <form action="{{ url_for('carrito.eliminar', item_id=item.idItem) }}" method="post" class="inline-form">
+            <button type="submit" class="btn btn-red btn-sm" aria-label="Eliminar del carrito">
+              <i class="bi bi-trash" aria-hidden="true"></i>
             </button>
-        </form>
-    </div>
-</div>
+          </form>
+        </article>
+      {% endfor %}
+    {% else %}
+      <div class="drawer-empty">
+        <div class="drawer-icon"><i class="bi bi-cart3" aria-hidden="true"></i></div>
+        <h3>Aún no has añadido ningún artículo</h3>
+        <p>Explora la tienda y agrega productos a tu carrito.</p>
+      </div>
+    {% endif %}
+  </div>
 
-{% else %}
-<div class="text-center py-5">
-    <i class="bi bi-cart3 display-1 text-muted"></i>
-    <h3 class="mt-3">Tu carrito está vacío</h3>
-    <p class="text-muted">Explora la tienda y agrega productos a tu carrito.</p>
-    <a href="{{ url_for('tienda.index') }}" class="btn btn-danger">
-        <i class="bi bi-shop"></i> Ir a la tienda
+  <footer class="cart-drawer-foot">
+    {% if carrito.items %}
+      <div class="flex-between mb-2">
+        <span class="muted small">Total</span>
+        <strong class="total-amount">${{ "%.2f"|format(carrito.total()) }}</strong>
+      </div>
+      <form action="{{ url_for('pedido.checkout') }}" method="post" class="mb-2">
+        <button type="submit" class="btn btn-red btn-block">
+          <i class="bi bi-check-lg" aria-hidden="true"></i> Finalizar compra
+        </button>
+      </form>
+    {% endif %}
+    <a href="{{ url_for('tienda.index') }}" class="btn btn-red btn-block">
+      <i class="bi bi-shop" aria-hidden="true"></i> Continuar
     </a>
-</div>
-{% endif %}
-
+  </footer>
+</aside>
 {% endblock %}

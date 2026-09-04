@@ -2,13 +2,14 @@
 {% block titulo_pagina %}Lista de Categorías{% endblock %}
 {% block content %}
 
-    <div class="text-start">
-        <a href="{{ url_for('categoria.add') }}" class="btn btn-primary btn-sm mb-1">
-            <i class="bi bi-plus-circle"></i> Nueva Categoría
-        </a>
-    </div>
+<div class="toolbar">
+    <a href="{{ url_for('categoria.add') }}" class="btn btn-black btn-sm">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i> Nueva Categoría
+    </a>
+</div>
 
-    <table class="table table-striped">
+<div class="table-wrap">
+    <table class="table striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -26,24 +27,28 @@
                     <td>{{ categoria.descripcion or '-' }}</td>
                     <td>{{ categoria.productos|length }}</td>
                     <td>
-                        <a href="{{ url_for('categoria.edit', id=categoria.idCategoria) }}" class="btn btn-primary btn-sm mb-1">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <form action="{{ url_for('categoria.delete', id=categoria.idCategoria) }}" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta categoría?');">
-                            <button type="submit" class="btn btn-danger btn-sm mb-1">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                        <div class="row-actions">
+                            <a href="{{ url_for('categoria.edit', id=categoria.idCategoria) }}" class="btn btn-black btn-sm" aria-label="Editar">
+                                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                            </a>
+                            <form action="{{ url_for('categoria.delete', id=categoria.idCategoria) }}" method="post" class="inline-form" onsubmit="return confirm('¿Eliminar esta categoría?');">
+                                <button type="submit" class="btn btn-red btn-sm" aria-label="Eliminar">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    {% if not categorias %}
-    <div class="alert alert-info">
-        No hay categorías registradas aún.
-    </div>
-    {% endif %}
+{% if not categorias %}
+<div class="empty-state">
+    <div class="empty-icon"><i class="bi bi-tags" aria-hidden="true"></i></div>
+    <p class="empty-title">No hay categorías registradas aún</p>
+</div>
+{% endif %}
 
 {% endblock %}

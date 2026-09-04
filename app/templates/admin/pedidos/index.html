@@ -2,8 +2,8 @@
 {% block titulo_pagina %}Administración de Pedidos{% endblock %}
 {% block content %}
 
-<div class="table-responsive">
-    <table class="table table-striped align-middle">
+<div class="table-wrap">
+    <table class="table striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -22,29 +22,34 @@
                     <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
                     <td>${{ "%.2f"|format(pedido.total) }}</td>
                     <td>
-                        {% set estados = {'pendiente': 'secondary', 'pagado': 'info', 'enviado': 'primary', 'entregado': 'success', 'cancelado': 'danger'} %}
-                        <span class="badge bg-{{ estados.get(pedido.estado, 'secondary') }}">{{ pedido.estado }}</span>
+                        {% set estados = {'pendiente': 'badge-gray', 'pagado': 'badge-blue', 'enviado': 'badge-black', 'entregado': 'badge-green', 'cancelado': 'badge-red'} %}
+                        <span class="badge {{ estados.get(pedido.estado, 'badge-gray') }}">{{ pedido.estado }}</span>
                     </td>
                     <td>
-                        <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-success btn-sm mb-1">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Cambiar estado
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for estado in ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'] %}
-                                <li>
-                                    <form action="{{ url_for('pedido_admin.cambiar_estado', id=pedido.idPedido) }}" method="post" class="dropdown-item p-0">
-                                        <button type="submit" name="estado" value="{{ estado }}" class="dropdown-item">
-                                            {% if estado == pedido.estado %}<i class="bi bi-check-circle"></i>{% endif %}
-                                            {{ estado }}
-                                        </button>
-                                    </form>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                        <div class="row-actions">
+                            <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-green btn-sm" aria-label="Ver detalle">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </a>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-black btn-sm" data-dropdown>
+                                    Cambiar estado <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for estado in ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'] %}
+                                    <li>
+                                        <form action="{{ url_for('pedido_admin.cambiar_estado', id=pedido.idPedido) }}" method="post">
+                                            <button type="submit" name="estado" value="{{ estado }}" class="dropdown-item">
+                                                {% if estado == pedido.estado %}
+                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ estado }}
+                                                {% else %}
+                                                    <i class="bi bi-circle" aria-hidden="true"></i> {{ estado }}
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -54,8 +59,9 @@
 </div>
 
 {% if not pedidos %}
-<div class="alert alert-info">
-    No hay pedidos registrados aún.
+<div class="empty-state">
+    <div class="empty-icon"><i class="bi bi-receipt" aria-hidden="true"></i></div>
+    <p class="empty-title">No hay pedidos registrados aún</p>
 </div>
 {% endif %}
 

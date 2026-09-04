@@ -1,24 +1,21 @@
 {% extends "base.html" %}
 {% block titulo_pagina %}Editar Categoría: {{ categoria.nombre }}{% endblock %}
 {% block content %}
-<form action="{{ url_for('categoria.edit', id=categoria.idCategoria) }}" method="post" class="needs-validation" novalidate>
-    <div class="form-group mb-3">
-        <label for="nombre" class="form-label">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" value="{{ categoria.nombre }}" required class="form-control">
-        <div class="invalid-feedback">
-            Por favor, ingrese el nombre de la categoría.
-        </div>
+<form action="{{ url_for('categoria.edit', id=categoria.idCategoria) }}" method="post">
+    <div class="field">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ categoria.nombre }}" class="input" required>
     </div>
 
-    <div class="form-group mb-3">
-        <label for="descripcion" class="form-label">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" rows="3" class="form-control">{{ categoria.descripcion or '' }}</textarea>
+    <div class="field">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="3" class="textarea">{{ categoria.descripcion or '' }}</textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-lg"></i> Actualizar Categoría
+    <button type="submit" class="btn btn-black">
+        <i class="bi bi-check-lg" aria-hidden="true"></i> Actualizar Categoría
     </button>
-    <a href="{{ url_for('categoria.index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+    <a href="{{ url_for('categoria.index') }}" class="btn btn-outline">Cancelar</a>
 </form>
 
 {% endblock %}

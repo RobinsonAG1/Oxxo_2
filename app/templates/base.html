@@ -1,88 +1,73 @@
 <!DOCTYPE html>
-<html lang="es" class="h-100">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda OXXO</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css')}}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='all.min.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/oxxo-favicon.svg') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-icons.min.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='oxxo.css') }}">
 </head>
 
-<body class="d-flex flex-column h-100 bg-light">
+<body>
 
-  {% if current_user.is_authenticated %}
-    {% include 'menu.html' %}
-  {% endif %}
+  {% include 'menu.html' %}
 
-  <main class="flex-shrink-0">
+  <main class="site-main">
 
-    <div class="container mt-4 mx-auto">
-
+    {% if current_user.is_authenticated %}
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-          {% for category, message in messages %}
-            <div class="flash-message alert alert-{{ category }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endfor %}
+          <div class="flash-list">
+            {% for category, message in messages %}
+              <div class="flash {{ 'danger' if category not in ['success', 'info', 'warning'] else category }}">
+                <span>{{ message }}</span>
+                <button type="button" class="flash-close" aria-label="Cerrar">&times;</button>
+              </div>
+            {% endfor %}
+          </div>
         {% endif %}
       {% endwith %}
+    {% endif %}
 
-      <div class="row justify-content-center">
-        <div class="col-md-10">
-          <div class="card shadow-sm border border-2 border-danger">
-            <div class="card-header bg-danger text-white">
-              <h4 class="mb-0 text-center">{% block titulo_pagina %}{% endblock %}</h4>
-            </div>
-            <div class="card-body">
-              <div class="container-fluid p-3">
-
-                {% block content %}
-                {% endblock %}
-
-              </div>
-            </div>
-          </div>
-        </div>
+    {% block page %}
+    <section class="page-card">
+      <header class="page-card-head">
+        <i class="bi bi-shop" aria-hidden="true"></i>
+        <h1>{% block titulo_pagina %}{% endblock %}</h1>
+      </header>
+      <div class="page-card-body">
+        {% block content %}
+        {% endblock %}
       </div>
-    </div>
+    </section>
+    {% endblock %}
+
   </main>
 
-  <footer class="footer mt-auto py-3 bg-dark text-white">
-    <div class="container text-center">
-      <span class="text-white">&copy; 2024 Tienda OXXO. Todos los derechos reservados.</span>
-    </div>
+  <footer class="site-foot">
+    <small>&copy; 2024 Tienda OXXO. Todos los derechos reservados.</small>
   </footer>
 
-  <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.js') }}"></script>
+  <script src="{{ url_for('static', filename='oxxo.js') }}"></script>
 
   {% if current_user.is_authenticated %}
   <script>
-    // Prevenir navegacion hacia atras despues del logout
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function(event) {
-        // Verificar si el usuario sigue autenticado
         fetch('/check_auth', {method: 'GET'})
             .then(response => {
                 if (response.status === 401 || !response.ok) {
-                    // Usuario no autenticado, redirigir al login
                     window.location.href = '/';
                 } else {
-                    // Usuario autenticado, permitir navegacion pero prevenir ir atras
                     window.history.pushState(null, null, window.location.href);
                 }
             })
             .catch(() => {
-                // Error en la verificacion, asumir no autenticado
                 window.location.href = '/';
             });
     };
 
-    // Verificacion periodica de autenticacion
     setInterval(function() {
         fetch('/check_auth', {method: 'GET'})
             .then(response => {
@@ -93,7 +78,7 @@
             .catch(() => {
                 window.location.href = '/';
             });
-    }, 5000); // Verificar cada 5 segundos
+    }, 5000);
   </script>
   {% endif %}
 

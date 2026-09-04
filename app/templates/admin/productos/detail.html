@@ -1,55 +1,58 @@
 {% extends "base.html" %}
 {% block titulo_pagina %}Producto: {{ producto.nombre }}{% endblock %}
 {% block content %}
-    <div class="container">
-        <table class="table table-bordered">
-            <tr>
-                <th>ID</th>
-                <td>{{ producto.idProducto }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ producto.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Descripción</th>
-                <td>{{ producto.descripcion or 'Sin descripción' }}</td>
-            </tr>
-            <tr>
-                <th>Categoría</th>
-                <td>{{ producto.categoria.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Precio</th>
-                <td>${{ "%.2f"|format(producto.precio) }}</td>
-            </tr>
-            <tr>
-                <th>Stock</th>
-                <td>
-                    {% if producto.stock == 0 %}
-                        <span class="badge bg-danger">Agotado</span>
-                    {% elif producto.stock <= 5 %}
-                        <span class="badge bg-warning text-dark">{{ producto.stock }}</span>
-                    {% else %}
-                        <span class="badge bg-success">{{ producto.stock }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-        <div class="d-flex justify-content-between">
-            <a href="{{ url_for('producto.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver a productos
-            </a>
-            <div>
-                <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-primary btn-sm mb-1">
-                    <i class="bi bi-pencil-square"></i> Editar
-                </a>
-                <form action="{{ url_for('producto.delete', id=producto.idProducto) }}" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este producto?');">
-                    <button type="submit" class="btn btn-danger btn-sm mb-1">
-                        <i class="bi bi-trash"></i> Eliminar
-                    </button>
-                </form>
-            </div>
-        </div>
+
+<div class="table-wrap">
+    <table class="table kv">
+        <tr>
+            <th>ID</th>
+            <td>{{ producto.idProducto }}</td>
+        </tr>
+        <tr>
+            <th>Nombre</th>
+            <td>{{ producto.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Descripción</th>
+            <td>{{ producto.descripcion or 'Sin descripción' }}</td>
+        </tr>
+        <tr>
+            <th>Categoría</th>
+            <td>{{ producto.categoria.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Precio</th>
+            <td>${{ "%.2f"|format(producto.precio) }}</td>
+        </tr>
+        <tr>
+            <th>Stock</th>
+            <td>
+                {% if producto.stock == 0 %}
+                    <span class="badge badge-red">Agotado</span>
+                {% elif producto.stock <= 5 %}
+                    <span class="badge badge-yellow">{{ producto.stock }}</span>
+                {% else %}
+                    <span class="badge badge-green">{{ producto.stock }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="flex-between mt-3">
+    <a href="{{ url_for('producto.index') }}" class="btn btn-outline">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a productos
+    </a>
+    <div class="inline">
+        <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-black btn-sm">
+            <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar
+        </a>
+        <form action="{{ url_for('producto.delete', id=producto.idProducto) }}" method="post" class="inline-form" onsubmit="return confirm('¿Eliminar este producto?');">
+            <button type="submit" class="btn btn-red btn-sm">
+                <i class="bi bi-trash" aria-hidden="true"></i> Eliminar
+            </button>
+        </form>
     </div>
+</div>
+
 {% endblock %}

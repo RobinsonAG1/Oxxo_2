@@ -3,8 +3,8 @@
 {% block content %}
 
 {% if pedidos %}
-<div class="table-responsive">
-    <table class="table table-striped align-middle">
+<div class="table-wrap">
+    <table class="table striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -21,12 +21,12 @@
                     <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
                     <td>${{ "%.2f"|format(pedido.total) }}</td>
                     <td>
-                        {% set estados = {'pendiente': 'secondary', 'pagado': 'info', 'enviado': 'primary', 'entregado': 'success', 'cancelado': 'danger'} %}
-                        <span class="badge bg-{{ estados.get(pedido.estado, 'secondary') }}">{{ pedido.estado }}</span>
+                        {% set estados = {'pendiente': 'badge-gray', 'pagado': 'badge-blue', 'enviado': 'badge-black', 'entregado': 'badge-green', 'cancelado': 'badge-red'} %}
+                        <span class="badge {{ estados.get(pedido.estado, 'badge-gray') }}">{{ pedido.estado }}</span>
                     </td>
                     <td>
-                        <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-success btn-sm">
-                            <i class="bi bi-eye"></i> Ver detalle
+                        <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-green btn-sm">
+                            <i class="bi bi-eye" aria-hidden="true"></i> Ver detalle
                         </a>
                     </td>
                 </tr>
@@ -35,12 +35,12 @@
     </table>
 </div>
 {% else %}
-<div class="text-center py-5">
-    <i class="bi bi-box-seam display-1 text-muted"></i>
-    <h3 class="mt-3">Aún no tienes pedidos</h3>
-    <p class="text-muted">Visita la tienda y realiza tu primer pedido.</p>
-    <a href="{{ url_for('tienda.index') }}" class="btn btn-danger">
-        <i class="bi bi-shop"></i> Ir a la tienda
+<div class="empty-state">
+    <div class="empty-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
+    <h3 class="empty-title">Aún no tienes pedidos</h3>
+    <p class="empty-text">Visita la tienda y realiza tu primer pedido.</p>
+    <a href="{{ url_for('tienda.index') }}" class="btn btn-red">
+        <i class="bi bi-shop" aria-hidden="true"></i> Ir a la tienda
     </a>
 </div>
 {% endif %}

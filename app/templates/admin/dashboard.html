@@ -2,47 +2,29 @@
 {% block titulo_pagina %}Dashboard{% endblock %}
 {% block content %}
 
-<div class="text-center">
-    <h1><i class="bi bi-person-gear"></i> ¡Bienvenido, {{ current_user.nameUser }}!</h1>
-    <p class="text-muted">Panel de administración de la tienda OXXO.</p>
+<div class="center">
+    <h1 class="welcome"><i class="bi bi-person" aria-hidden="true"></i> ¡Bienvenido, {{ current_user.nameUser }}!</h1>
+    <p class="muted">Panel de administración de la tienda OXXO.</p>
 </div>
 
-<div class="row mt-4 g-4">
-    <div class="col-md-4">
-        <div class="card text-center border-primary">
-            <div class="card-body">
-                <i class="bi bi-box-seam display-4 text-primary"></i>
-                <h3 class="mt-2">{{ producto_count }}</h3>
-                <p class="text-muted mb-0">Productos registrados</p>
-            </div>
-            <div class="card-footer">
-                <a href="{{ url_for('producto.index') }}" class="btn btn-sm btn-primary">Ver productos</a>
-            </div>
-        </div>
+<div class="stat-grid mt-3">
+    <div class="stat-card blue">
+        <div class="stat-icon"><i class="bi bi-box-seam blue" aria-hidden="true"></i></div>
+        <div class="stat-count">{{ producto_count }}</div>
+        <p class="stat-label">Productos registrados</p>
+        <a href="{{ url_for('producto.index') }}" class="btn btn-blue btn-sm">Ver productos</a>
     </div>
-    <div class="col-md-4">
-        <div class="card text-center border-success">
-            <div class="card-body">
-                <i class="bi bi-receipt display-4 text-success"></i>
-                <h3 class="mt-2">{{ pedido_count }}</h3>
-                <p class="text-muted mb-0">Pedidos</p>
-            </div>
-            <div class="card-footer">
-                <a href="{{ url_for('pedido_admin.index') }}" class="btn btn-sm btn-success">Ver pedidos</a>
-            </div>
-        </div>
+    <div class="stat-card green">
+        <div class="stat-icon"><i class="bi bi-receipt green" aria-hidden="true"></i></div>
+        <div class="stat-count">{{ pedido_count }}</div>
+        <p class="stat-label">Pedidos</p>
+        <a href="{{ url_for('pedido_admin.index') }}" class="btn btn-green btn-sm">Ver pedidos</a>
     </div>
-    <div class="col-md-4">
-        <div class="card text-center border-info">
-            <div class="card-body">
-                <i class="bi bi-people display-4 text-info"></i>
-                <h3 class="mt-2">{{ cliente_count }}</h3>
-                <p class="text-muted mb-0">Clientes registrados</p>
-            </div>
-            <div class="card-footer">
-                <a href="{{ url_for('categoria.index') }}" class="btn btn-sm btn-info">Ver categorías</a>
-            </div>
-        </div>
+    <div class="stat-card red">
+        <div class="stat-icon"><i class="bi bi-people red" aria-hidden="true"></i></div>
+        <div class="stat-count">{{ cliente_count }}</div>
+        <p class="stat-label">Clientes registrados</p>
+        <a href="{{ url_for('categoria.index') }}" class="btn btn-red btn-sm">Ver categorías</a>
     </div>
 </div>
 

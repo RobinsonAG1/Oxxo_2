@@ -1,79 +1,75 @@
-<!-- Menu de Navegacion -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-          <a class="navbar-brand" href="{{ url_for('auth.dashboard') }}">
-              <i class="bi bi-shop"></i> OXXO
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                  aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav">
-                  {% if current_user.rol == 'admin' %}
-                  <!-- Productos -->
-                  <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Productos
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarProductos">
-                          <li><a class="dropdown-item" href="{{ url_for('producto.index') }}">Listado</a></li>
-                          <li><a class="dropdown-item" href="{{ url_for('producto.add') }}">Agregar</a></li>
-                      </ul>
-                  </li>
-                  <!-- Categorias -->
-                  <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Categorías
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarCategorias">
-                          <li><a class="dropdown-item" href="{{ url_for('categoria.index') }}">Listado</a></li>
-                          <li><a class="dropdown-item" href="{{ url_for('categoria.add') }}">Agregar</a></li>
-                      </ul>
-                  </li>
-                  <!-- Pedidos -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('pedido_admin.index') }}">
-                          <i class="bi bi-receipt"></i> Pedidos
-                      </a>
-                  </li>
-                  {% else %}
-                  <!-- Tienda -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('tienda.index') }}">
-                          <i class="bi bi-shop"></i> Tienda
-                      </a>
-                  </li>
-                  <!-- Carrito -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('carrito.ver_carrito') }}">
-                          <i class="bi bi-cart3"></i> Carrito
-                      </a>
-                  </li>
-                  <!-- Mis Pedidos -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('pedido.mis_pedidos') }}">
-                          <i class="bi bi-box-seam"></i> Mis Pedidos
-                      </a>
-                  </li>
-                  {% endif %}
-              </ul>
-              <!-- Usuario y boton de cerrar sesion a la derecha -->
-              <ul class="navbar-nav ms-auto">
-                  {% if current_user.is_authenticated %}
-                  <li class="nav-item">
-                      <span class="navbar-text me-3">
-                          <i class="bi bi-person-circle"></i> {{ current_user.nameUser }}
-                          <span class="badge {% if current_user.rol == 'admin' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} ms-1">{{ current_user.rol }}</span>
-                      </span>
-                  </li>
-                  <li class="nav-item">
-                      <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
-                          <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                      </a>
-                  </li>
-                  {% endif %}
-              </ul>
-          </div>
+<header class="site-head">
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="{{ url_for('auth.dashboard') }}" aria-label="OXXO">
+        OXXO
+      </a>
+
+      <div class="nav-search">
+        <i class="bi bi-search search-icon" aria-hidden="true"></i>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Buscar productos o tiendas">
       </div>
-    </nav>
+
+      <button class="nav-toggle" type="button" aria-label="Abrir menú">
+        <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
+
+      <div class="nav-menu" id="nav-menu">
+        {% if current_user.is_authenticated %}
+        <ul class="nav-links">
+          {% if current_user.rol == 'admin' %}
+          <li class="dropdown">
+            <a class="nav-link" href="#" data-dropdown>
+              Productos <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('producto.index') }}"><i class="bi bi-list-ul" aria-hidden="true"></i> Listado</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('producto.add') }}"><i class="bi bi-plus-circle" aria-hidden="true"></i> Agregar</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="nav-link" href="#" data-dropdown>
+              Categorías <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('categoria.index') }}"><i class="bi bi-list-ul" aria-hidden="true"></i> Listado</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('categoria.add') }}"><i class="bi bi-plus-circle" aria-hidden="true"></i> Agregar</a></li>
+            </ul>
+          </li>
+          <li class=""><a class="nav-link" href="{{ url_for('pedido_admin.index') }}"><i class="bi bi-receipt" aria-hidden="true"></i> Pedidos</a></li>
+          {% else %}
+          <li class=""><a class="nav-link" href="{{ url_for('tienda.index') }}"><i class="bi bi-shop" aria-hidden="true"></i> Tienda</a></li>
+          <li class=""><a class="nav-link" href="{{ url_for('pedido.mis_pedidos') }}"><i class="bi bi-box-seam" aria-hidden="true"></i> Mis Pedidos</a></li>
+          {% endif %}
+        </ul>
+        {% endif %}
+
+        <div class="nav-actions">
+          <a class="nav-iconlink" href="#">
+            <i class="bi bi-geo-alt" aria-hidden="true"></i> Tiendas
+          </a>
+
+          {% if current_user.is_authenticated %}
+          <span class="user-chip">
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+            {{ current_user.nameUser }}
+            <span class="badge {% if current_user.rol == 'admin' %}badge-red{% else %}badge-yellow{% endif %}">{{ current_user.rol }}</span>
+          </span>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-red btn-sm">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+          </a>
+          {% else %}
+          <a class="nav-iconlink" href="#" data-open-modal="authModal">
+            <i class="bi bi-person" aria-hidden="true"></i> Ingresar
+          </a>
+          {% endif %}
+
+          <a href="{% if current_user.is_authenticated %}{{ url_for('carrito.ver_carrito') }}{% else %}#{% endif %}"
+             class="btn-cart" {% if not current_user.is_authenticated %}data-open-modal="authModal"{% endif %}>
+            <i class="bi bi-cart3" aria-hidden="true"></i> Mi carrito
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
