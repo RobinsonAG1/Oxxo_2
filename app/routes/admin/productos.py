@@ -1,25 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from app import db
-from app.models.producto import Producto
-from app.models.categoria import Categoria
+from app.models.admin.producto import Producto
+from app.models.admin.categoria import Categoria
 from app.admin_required import admin_required
 
 bp = Blueprint('producto', __name__, url_prefix='/Producto')
-
-
-@bp.route('/tienda')
-@login_required
-def tienda():
-    """Catálogo visible para clientes."""
-    from app.models.categoria import Categoria
-    categoria_id = request.args.get('categoria_id', type=int)
-    if categoria_id:
-        productos = Producto.query.filter_by(categoria_id=categoria_id).order_by(Producto.nombre.asc()).all()
-    else:
-        productos = Producto.query.order_by(Producto.nombre.asc()).all()
-    categorias = Categoria.query.all()
-    return render_template('producto/tienda.html', productos=productos, categorias=categorias, categoria_id=categoria_id)
 
 
 @bp.route('/')
@@ -27,7 +13,7 @@ def tienda():
 @admin_required
 def index():
     productos = Producto.query.order_by(Producto.nombre.asc()).all()
-    return render_template('producto/index.html', productos=productos)
+    return render_template('admin/productos/index.html', productos=productos)
 
 
 @bp.route('/add', methods=['GET', 'POST'])
@@ -54,7 +40,7 @@ def add():
         flash('Producto creado exitosamente.', 'success')
         return redirect(url_for('producto.index'))
 
-    return render_template('producto/add.html', categorias=categorias)
+    return render_template('admin/productos/add.html', categorias=categorias)
 
 
 @bp.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -73,7 +59,7 @@ def edit(id):
         flash('Producto actualizado exitosamente.', 'success')
         return redirect(url_for('producto.index'))
 
-    return render_template('producto/edit.html', producto=producto, categorias=categorias)
+    return render_template('admin/productos/edit.html', producto=producto, categorias=categorias)
 
 
 @bp.route('/detail/<int:id>')
@@ -81,7 +67,7 @@ def edit(id):
 @admin_required
 def detail(id):
     producto = Producto.query.get_or_404(id)
-    return render_template('producto/detail.html', producto=producto)
+    return render_template('admin/productos/detail.html', producto=producto)
 
 
 @bp.route('/delete/<int:id>', methods=['POST'])

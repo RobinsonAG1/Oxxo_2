@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
-from app.models.pedido import Pedido, DetallePedido
-from app.models.carrito import Carrito, CarritoItem
-from app.models.producto import Producto
-from app.admin_required import admin_required
+from app.models.cliente.pedido import Pedido, DetallePedido
+from app.models.cliente.carrito import Carrito, CarritoItem
+from app.models.admin.producto import Producto
 
 bp = Blueprint('pedido', __name__, url_prefix='/pedido')
 
@@ -50,7 +49,7 @@ def checkout():
 @login_required
 def mis_pedidos():
     pedidos = Pedido.query.filter_by(user_id=current_user.idUser).order_by(Pedido.fecha.desc()).all()
-    return render_template('pedido/mis_pedidos.html', pedidos=pedidos)
+    return render_template('cliente/pedidos/mis_pedidos.html', pedidos=pedidos)
 
 
 @bp.route('/detalle/<int:id>')
@@ -60,23 +59,4 @@ def detalle(id):
     if pedido.user_id != current_user.idUser and current_user.rol != 'admin':
         flash('No tienes permiso para ver este pedido.', 'danger')
         return redirect(url_for('auth.dashboard'))
-    return render_template('pedido/detalle.html', pedido=pedido)
-
-
-@bp.route('/')
-@login_required
-@admin_required
-def index():
-    pedidos = Pedido.query.order_by(Pedido.fecha.desc()).all()
-    return render_template('pedido/index.html', pedidos=pedidos)
-
-
-@bp.route('/cambiar-estado/<int:id>', methods=['POST'])
-@login_required
-@admin_required
-def cambiar_estado(id):
-    pedido = Pedido.query.get_or_404(id)
-    pedido.estado = request.form.get('estado', 'pendiente')
-    db.session.commit()
-    flash('Estado del pedido actualizado.', 'success')
-    return redirect(url_for('pedido.index'))
+    return render_template('detalle_pedido.html', pedido=pedido)

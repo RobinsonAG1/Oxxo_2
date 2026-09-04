@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
-from app.models.producto import Producto
-from app.models.carrito import Carrito, CarritoItem
+from app.models.admin.producto import Producto
+from app.models.cliente.carrito import Carrito, CarritoItem
 
 bp = Blueprint('carrito', __name__, url_prefix='/carrito')
 
@@ -21,7 +21,7 @@ def obtener_carrito(user_id):
 @login_required
 def ver_carrito():
     carrito = obtener_carrito(current_user.idUser)
-    return render_template('carrito/ver.html', carrito=carrito)
+    return render_template('cliente/carrito.html', carrito=carrito)
 
 
 @bp.route('/add/<int:producto_id>', methods=['POST'])
