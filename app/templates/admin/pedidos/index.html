@@ -36,7 +36,7 @@
                             <ul class="dropdown-menu">
                                 {% for estado in ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'] %}
                                 <li>
-                                    <form action="{{ url_for('pedido.cambiar_estado', id=pedido.idPedido) }}" method="post" class="dropdown-item p-0">
+                                    <form action="{{ url_for('pedido_admin.cambiar_estado', id=pedido.idPedido) }}" method="post" class="dropdown-item p-0">
                                         <button type="submit" name="estado" value="{{ estado }}" class="dropdown-item">
                                             {% if estado == pedido.estado %}<i class="bi bi-check-circle"></i>{% endif %}
                                             {{ estado }}

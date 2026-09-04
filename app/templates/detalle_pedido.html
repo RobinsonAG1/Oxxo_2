@@ -54,14 +54,14 @@
 
         <div class="d-flex gap-2">
             {% if current_user.rol == 'admin' %}
-            <a href="{{ url_for('pedido.index') }}" class="btn btn-secondary">
+            <a href="{{ url_for('pedido_admin.index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Volver a pedidos
             </a>
             {% else %}
             <a href="{{ url_for('pedido.mis_pedidos') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Volver a mis pedidos
             </a>
-            <a href="{{ url_for('producto.tienda') }}" class="btn btn-danger">
+            <a href="{{ url_for('tienda.index') }}" class="btn btn-danger">
                 <i class="bi bi-shop"></i> Seguir comprando
             </a>
             {% endif %}

@@ -3,11 +3,11 @@
 {% block content %}
 
 <div class="mb-3">
-    <a href="{{ url_for('producto.tienda') }}" class="btn btn-sm {% if not categoria_id %}btn-danger{% else %}btn-outline-secondary{% endif %} mb-1">
+    <a href="{{ url_for('tienda.index') }}" class="btn btn-sm {% if not categoria_id %}btn-danger{% else %}btn-outline-secondary{% endif %} mb-1">
         Todas las categorías
     </a>
     {% for categoria in categorias %}
-        <a href="{{ url_for('producto.tienda', categoria_id=categoria.idCategoria) }}" class="btn btn-sm {% if categoria_id == categoria.idCategoria %}btn-danger{% else %}btn-outline-secondary{% endif %} mb-1">
+        <a href="{{ url_for('tienda.index', categoria_id=categoria.idCategoria) }}" class="btn btn-sm {% if categoria_id == categoria.idCategoria %}btn-danger{% else %}btn-outline-secondary{% endif %} mb-1">
             {{ categoria.nombre }}
         </a>
     {% endfor %}

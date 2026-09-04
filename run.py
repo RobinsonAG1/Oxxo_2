@@ -3,9 +3,9 @@ from app import create_app, db
 
 def seed_data():
     """Crea un usuario administrador, categorias y productos de ejemplo."""
-    from app.models.users import User
-    from app.models.categoria import Categoria
-    from app.models.producto import Producto
+    from app.models.login.users import User
+    from app.models.admin.categoria import Categoria
+    from app.models.admin.producto import Producto
 
     if not User.query.filter_by(nameUser='admin').first():
         admin = User(nameUser='admin', email='admin@oxxo.com', rol='admin')

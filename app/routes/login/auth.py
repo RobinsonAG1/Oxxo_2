@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response, session
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models.users import User
+from app.models.login.users import User
 
 bp = Blueprint('auth', __name__)
 
@@ -21,24 +21,24 @@ def login():
 
     if current_user.is_authenticated:
         return redirect(url_for('auth.dashboard'))
-    return render_template("login.html")
+    return render_template("login/login.html")
 
 
 @bp.route('/dashboard')
 @login_required
 def dashboard():
     if current_user.rol == 'admin':
-        from app.models.producto import Producto
-        from app.models.pedido import Pedido
-        from app.models.users import User
+        from app.models.admin.producto import Producto
+        from app.models.cliente.pedido import Pedido
+        from app.models.login.users import User
         producto_count = Producto.query.count()
         pedido_count = Pedido.query.count()
         cliente_count = User.query.filter_by(rol='cliente').count()
-        return render_template('dashboard.html',
+        return render_template('admin/dashboard.html',
                                producto_count=producto_count,
                                pedido_count=pedido_count,
                                cliente_count=cliente_count)
-    return render_template('dashboard.html')
+    return render_template('cliente/dashboard.html')
 
 
 @bp.route('/logout')

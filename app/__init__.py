@@ -15,25 +15,32 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(idUser):
-        from .models.users import User
+        from .models.login.users import User
         return User.query.get(int(idUser))
 
     # Import all models so they are registered with SQLAlchemy
-    from .models.users import User
-    from .models.categoria import Categoria
-    from .models.producto import Producto
-    from .models.carrito import Carrito, CarritoItem
-    from .models.pedido import Pedido, DetallePedido
+    from .models.login.users import User
+    from .models.admin.categoria import Categoria
+    from .models.admin.producto import Producto
+    from .models.cliente.carrito import Carrito, CarritoItem
+    from .models.cliente.pedido import Pedido, DetallePedido
 
-    # Register blueprints
-    from app.routes import (
-        auth, producto, categoria, carrito, pedido
-    )
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(producto.bp)
-    app.register_blueprint(categoria.bp)
-    app.register_blueprint(carrito.bp)
-    app.register_blueprint(pedido.bp)
+    # Register blueprints organizados por rol
+    from app.routes.login.auth import bp as auth_bp
+    from app.routes.admin.productos import bp as producto_bp
+    from app.routes.admin.categorias import bp as categoria_bp
+    from app.routes.admin.pedidos import bp as pedido_admin_bp
+    from app.routes.cliente.tienda import bp as tienda_bp
+    from app.routes.cliente.carrito import bp as carrito_bp
+    from app.routes.cliente.pedidos import bp as pedido_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(producto_bp)
+    app.register_blueprint(categoria_bp)
+    app.register_blueprint(pedido_admin_bp)
+    app.register_blueprint(tienda_bp)
+    app.register_blueprint(carrito_bp)
+    app.register_blueprint(pedido_bp)
 
     @app.after_request
     def add_no_cache_headers(response):
