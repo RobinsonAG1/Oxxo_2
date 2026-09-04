@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Dashboard{% endblock %}
+{% block content %}
+
+{% if current_user.rol == 'admin' %}
+<div class="text-center">
+    <h1><i class="bi bi-person-gear"></i> ¡Bienvenido, {{ current_user.nameUser }}!</h1>
+    <p class="text-muted">Panel de administración de la tienda OXXO.</p>
+</div>
+
+<div class="row mt-4 g-4">
+    <div class="col-md-4">
+        <div class="card text-center border-primary">
+            <div class="card-body">
+                <i class="bi bi-box-seam display-4 text-primary"></i>
+                <h3 class="mt-2">{{ producto_count }}</h3>
+                <p class="text-muted mb-0">Productos registrados</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('producto.index') }}" class="btn btn-sm btn-primary">Ver productos</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center border-success">
+            <div class="card-body">
+                <i class="bi bi-receipt display-4 text-success"></i>
+                <h3 class="mt-2">{{ pedido_count }}</h3>
+                <p class="text-muted mb-0">Pedidos</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('pedido.index') }}" class="btn btn-sm btn-success">Ver pedidos</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center border-info">
+            <div class="card-body">
+                <i class="bi bi-people display-4 text-info"></i>
+                <h3 class="mt-2">{{ cliente_count }}</h3>
+                <p class="text-muted mb-0">Clientes registrados</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('categoria.index') }}" class="btn btn-sm btn-info">Ver categorías</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center">
+    <h1><i class="bi bi-person"></i> ¡Bienvenido, {{ current_user.nameUser }}!</h1>
+    <p class="text-muted">Explora la tienda y haz tus pedidos.</p>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <a href="{{ url_for('producto.tienda') }}" class="btn btn-danger btn-lg">
+            <i class="bi bi-shop"></i> Ir a la tienda
+        </a>
+        <a href="{{ url_for('pedido.mis_pedidos') }}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-box-seam"></i> Mis pedidos
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

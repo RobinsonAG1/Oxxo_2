@@ -1,0 +1,79 @@
+<!-- Menu de Navegacion -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="{{ url_for('auth.dashboard') }}">
+              <i class="bi bi-shop"></i> OXXO
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                  aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul class="navbar-nav">
+                  {% if current_user.rol == 'admin' %}
+                  <!-- Productos -->
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Productos
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarProductos">
+                          <li><a class="dropdown-item" href="{{ url_for('producto.index') }}">Listado</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('producto.add') }}">Agregar</a></li>
+                      </ul>
+                  </li>
+                  <!-- Categorias -->
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Categorías
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarCategorias">
+                          <li><a class="dropdown-item" href="{{ url_for('categoria.index') }}">Listado</a></li>
+                          <li><a class="dropdown-item" href="{{ url_for('categoria.add') }}">Agregar</a></li>
+                      </ul>
+                  </li>
+                  <!-- Pedidos -->
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('pedido.index') }}">
+                          <i class="bi bi-receipt"></i> Pedidos
+                      </a>
+                  </li>
+                  {% else %}
+                  <!-- Tienda -->
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('producto.tienda') }}">
+                          <i class="bi bi-shop"></i> Tienda
+                      </a>
+                  </li>
+                  <!-- Carrito -->
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('carrito.ver_carrito') }}">
+                          <i class="bi bi-cart3"></i> Carrito
+                      </a>
+                  </li>
+                  <!-- Mis Pedidos -->
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('pedido.mis_pedidos') }}">
+                          <i class="bi bi-box-seam"></i> Mis Pedidos
+                      </a>
+                  </li>
+                  {% endif %}
+              </ul>
+              <!-- Usuario y boton de cerrar sesion a la derecha -->
+              <ul class="navbar-nav ms-auto">
+                  {% if current_user.is_authenticated %}
+                  <li class="nav-item">
+                      <span class="navbar-text me-3">
+                          <i class="bi bi-person-circle"></i> {{ current_user.nameUser }}
+                          <span class="badge {% if current_user.rol == 'admin' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} ms-1">{{ current_user.rol }}</span>
+                      </span>
+                  </li>
+                  <li class="nav-item">
+                      <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                          <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                      </a>
+                  </li>
+                  {% endif %}
+              </ul>
+          </div>
+      </div>
+    </nav>

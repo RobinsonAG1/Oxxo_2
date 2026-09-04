@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda OXXO</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-icons.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css">
+</head>
+
+<body class="d-flex flex-column h-100 bg-light">
+
+  {% if current_user.is_authenticated %}
+    {% include 'menu.html' %}
+  {% endif %}
+
+  <main class="flex-shrink-0">
+
+    <div class="container mt-4 mx-auto">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash-message alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <div class="card shadow-sm border border-2 border-danger">
+            <div class="card-header bg-danger text-white">
+              <h4 class="mb-0 text-center">{% block titulo_pagina %}{% endblock %}</h4>
+            </div>
+            <div class="card-body">
+              <div class="container-fluid p-3">
+
+                {% block content %}
+                {% endblock %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer mt-auto py-3 bg-dark text-white">
+    <div class="container text-center">
+      <span class="text-white">&copy; 2024 Tienda OXXO. Todos los derechos reservados.</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.js') }}"></script>
+
+  {% if current_user.is_authenticated %}
+  <script>
+    // Prevenir navegacion hacia atras despues del logout
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function(event) {
+        // Verificar si el usuario sigue autenticado
+        fetch('/check_auth', {method: 'GET'})
+            .then(response => {
+                if (response.status === 401 || !response.ok) {
+                    // Usuario no autenticado, redirigir al login
+                    window.location.href = '/';
+                } else {
+                    // Usuario autenticado, permitir navegacion pero prevenir ir atras
+                    window.history.pushState(null, null, window.location.href);
+                }
+            })
+            .catch(() => {
+                // Error en la verificacion, asumir no autenticado
+                window.location.href = '/';
+            });
+    };
+
+    // Verificacion periodica de autenticacion
+    setInterval(function() {
+        fetch('/check_auth', {method: 'GET'})
+            .then(response => {
+                if (response.status === 401 || !response.ok) {
+                    window.location.href = '/';
+                }
+            })
+            .catch(() => {
+                window.location.href = '/';
+            });
+    }, 5000); // Verificar cada 5 segundos
+  </script>
+  {% endif %}
+
+</body>
+</html>

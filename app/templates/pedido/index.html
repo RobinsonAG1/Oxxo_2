@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Administración de Pedidos{% endblock %}
+{% block content %}
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.idPedido }}</td>
+                    <td>{{ pedido.user.nameUser }}</td>
+                    <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>${{ "%.2f"|format(pedido.total) }}</td>
+                    <td>
+                        {% set estados = {'pendiente': 'secondary', 'pagado': 'info', 'enviado': 'primary', 'entregado': 'success', 'cancelado': 'danger'} %}
+                        <span class="badge bg-{{ estados.get(pedido.estado, 'secondary') }}">{{ pedido.estado }}</span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('pedido.detalle', id=pedido.idPedido) }}" class="btn btn-success btn-sm mb-1">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Cambiar estado
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% for estado in ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'] %}
+                                <li>
+                                    <form action="{{ url_for('pedido.cambiar_estado', id=pedido.idPedido) }}" method="post" class="dropdown-item p-0">
+                                        <button type="submit" name="estado" value="{{ estado }}" class="dropdown-item">
+                                            {% if estado == pedido.estado %}<i class="bi bi-check-circle"></i>{% endif %}
+                                            {{ estado }}
+                                        </button>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not pedidos %}
+<div class="alert alert-info">
+    No hay pedidos registrados aún.
+</div>
+{% endif %}
+
+{% endblock %}
