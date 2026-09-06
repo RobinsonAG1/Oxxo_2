@@ -32,8 +32,8 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.passwordUser, password)
 
     def save(self):
-        db.add(self)
-        db.commit()
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'<User {self.nameUser}>'

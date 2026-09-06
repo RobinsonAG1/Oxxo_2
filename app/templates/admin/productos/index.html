@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "admin/_paginacion.html" import paginacion_nav %}
 {% block titulo_pagina %}Lista de Productos{% endblock %}
 {% block content %}
 
@@ -7,71 +8,78 @@
             <i class="bi bi-plus-circle"></i> Agregar producto
         </a>
     </div>
-    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar producto...">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="productoTable">
-            {% for producto in productos %}
+
+    <form method="get" action="{{ url_for('producto.index') }}" class="row g-2 mb-3">
+        <div class="col-md-10">
+            <input type="text" name="q" value="{{ busqueda }}" class="form-control"
+                   placeholder="Buscar producto por nombre...">
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
                 <tr>
-                    <td>{{ producto.idProducto }}</td>
-                    <td>{{ producto.nombre }}</td>
-                    <td>{{ producto.categoria.nombre }}</td>
-                    <td>${{ "%.2f"|format(producto.precio) }}</td>
-                    <td>
-                        {% if producto.stock == 0 %}
-                            <span class="badge bg-danger">Agotado</span>
-                        {% elif producto.stock <= 5 %}
-                            <span class="badge bg-warning text-dark">{{ producto.stock }}</span>
-                        {% else %}
-                            <span class="badge bg-success">{{ producto.stock }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('producto.detail', id=producto.idProducto) }}" class="btn btn-success btn-sm mb-1">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-primary btn-sm mb-1">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <form action="{{ url_for('producto.delete', id=producto.idProducto) }}" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este producto?');">
-                            <button type="submit" class="btn btn-danger btn-sm mb-1">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.idProducto }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.categoria.nombre if producto.categoria else '-' }}</td>
+                        <td>${{ "%.2f"|format(producto.precio) }}</td>
+                        <td>
+                            {% if producto.stock == 0 %}
+                                <span class="badge bg-danger">Agotado</span>
+                            {% elif producto.stock <= 5 %}
+                                <span class="badge bg-warning text-dark">{{ producto.stock }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ producto.stock }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('producto.detail', id=producto.idProducto) }}" class="btn btn-success btn-sm mb-1">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('producto.edit', id=producto.idProducto) }}" class="btn btn-primary btn-sm mb-1">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ url_for('producto.delete', id=producto.idProducto) }}" method="post" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar este producto?');">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm mb-1">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {% if not productos %}
     <div class="alert alert-info">
-        No hay productos registrados aún.
+        {% if busqueda %}
+            No hay productos que coincidan con "{{ busqueda }}".
+        {% else %}
+            No hay productos registrados aún.
+        {% endif %}
     </div>
     {% endif %}
 
-    <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#productoTable tr');
-            rows.forEach(row => {
-                const rowText = row.textContent.toLowerCase();
-                if (rowText.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    {{ paginacion_nav(paginacion, 'producto.index') }}
 
 {% endblock %}

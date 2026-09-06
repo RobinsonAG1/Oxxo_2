@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Reportes{% endblock %}
+{% block content %}
+
+<h1><i class="bi bi-bar-chart"></i> Reportes y Estadísticas</h1>
+
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-currency-dollar display-4 text-success"></i>
+                <h4 class="mt-3">Ventas por Período</h4>
+                <p class="text-muted">Análisis de ventas por día, semana, mes o año</p>
+                <a href="{{ url_for('reportes.ventas') }}" class="btn btn-success">
+                    <i class="bi bi-graph-up"></i> Ver Reporte
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam display-4 text-primary"></i>
+                <h4 class="mt-3">Productos Más Vendidos</h4>
+                <p class="text-muted">Top 20 productos con mayor demanda</p>
+                <a href="{{ url_for('reportes.productos_mas_vendidos') }}" class="btn btn-primary">
+                    <i class="bi bi-list-ol"></i> Ver Ranking
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-exclamation-triangle display-4 text-warning"></i>
+                <h4 class="mt-3">Stock Bajo</h4>
+                <p class="text-muted">Productos con inventario bajo</p>
+                <a href="{{ url_for('reportes.stock_bajo') }}" class="btn btn-warning">
+                    <i class="bi bi-box-arrow-down"></i> Ver Alertas
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-speedometer2 display-4 text-info"></i>
+                <h4 class="mt-3">Resumen General</h4>
+                <p class="text-muted">Vista general del estado del negocio</p>
+                <a href="{{ url_for('reportes.resumen') }}" class="btn btn-info">
+                    <i class="bi bi-eye"></i> Ver Resumen
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -24,7 +24,7 @@ class CarritoItem(db.Model):
     cantidad = db.Column(db.Integer, nullable=False, default=1)
 
     carrito = db.relationship('Carrito', back_populates='items')
-    producto = db.relationship('Producto')
+    producto = db.relationship('Producto', backref=db.backref('carrito_items', lazy='dynamic'))
 
     def subtotal(self):
         return float(self.producto.precio) * self.cantidad

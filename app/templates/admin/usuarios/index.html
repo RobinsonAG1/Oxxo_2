@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "admin/_paginacion.html" import paginacion_nav %}
+{% block titulo_pagina %}Gestión de Usuarios{% endblock %}
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{{ url_for('usuario.add') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus"></i> Nuevo usuario
+        </a>
+    </div>
+
+    <form method="get" action="{{ url_for('usuario.index') }}" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="q" value="{{ busqueda }}" class="form-control"
+                   placeholder="Buscar por usuario o correo...">
+        </div>
+        <div class="col-md-4">
+            <select name="rol" class="form-select">
+                <option value="">Todos los roles</option>
+                {% for rol in roles %}
+                    <option value="{{ rol }}" {% if rol == rol_actual %}selected{% endif %}>{{ rol }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Pedidos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.idUser }}</td>
+                        <td>
+                            {{ usuario.nameUser }}
+                            {% if usuario.idUser == current_user.idUser %}
+                                <span class="badge bg-secondary">tú</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ usuario.email }}</td>
+                        <td>
+                            <span class="badge {% if usuario.rol == 'admin' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                                {{ usuario.rol }}
+                            </span>
+                        </td>
+                        <td>{{ conteos.get(usuario.idUser, 0) }}</td>
+                        <td>
+                            <a href="{{ url_for('usuario.detail', id=usuario.idUser) }}" class="btn btn-success btn-sm mb-1">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('usuario.edit', id=usuario.idUser) }}" class="btn btn-primary btn-sm mb-1">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            {% if usuario.idUser != current_user.idUser %}
+                            <form action="{{ url_for('usuario.delete', id=usuario.idUser) }}" method="post" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar al usuario {{ usuario.nameUser }}?');">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm mb-1">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if not usuarios %}
+    <div class="alert alert-info">No se encontraron usuarios.</div>
+    {% endif %}
+
+    {{ paginacion_nav(paginacion, 'usuario.index') }}
+
+{% endblock %}
